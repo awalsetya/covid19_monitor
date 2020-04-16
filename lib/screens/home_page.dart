@@ -73,6 +73,11 @@ class _HomePageState extends State<HomePage> {
                       AppStyle.txr),
                 ],
               ),
+              SizedBox(height: 20),
+              Card(
+                color: Color(0xff3B4F55),
+                child: Column(),
+              )
           ],
         ),
       ),
