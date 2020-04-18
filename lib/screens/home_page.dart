@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../providers/homeprovider.dart';
+import '../providers/country_provider.dart';
 import '../screens/about_page.dart';
 import '../utilities/app_style.dart';
 
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
       datetime = fn.format(DateTime(now.year, now.month, now.day - 1));
     });
     Provider.of<HomeProvider>(context, listen: false).getHomeProvider();
+    Provider.of<CountryProvider>(context, listen: false).getCountryProvider();
   }
 
   @override
@@ -29,6 +31,7 @@ class _HomePageState extends State<HomePage> {
     DateFormat f = DateFormat("yyyy-MM-dd HH:mm:ss");
     final nf = NumberFormat("#,###");
     var home = Provider.of<HomeProvider>(context).home;
+    var country = Provider.of<CountryProvider>(context).country;
     return Scaffold(
       appBar: AppBar(
         title: Image.asset('lib/images/covid19.png', height: 20.0),
@@ -73,11 +76,30 @@ class _HomePageState extends State<HomePage> {
                       AppStyle.txr),
                 ],
               ),
-              SizedBox(height: 20),
-              Card(
-                color: Color(0xff3B4F55),
-                child: Column(),
-              )
+            SizedBox(height: 20),
+            Card(
+              color: Color(0xff3B4F55),
+              child: Column(
+                children: <Widget>[
+                  if (country != null)
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Theme(
+                          data: ThemeData(canvasColor: AppStyle.bg),
+                          child: DropdownButton(
+                            isExpanded: true,
+                            hint: Text('Please choose a location', style: TextStyle(color: AppStyle.bgl),
+                            ),
+                            value: _selectedLocation,
+                            onChanged: (newValue){
+                              
+                            },
+                          ),
+                          ),
+                    )
+                ],
+              ),
+            )
           ],
         ),
       ),
