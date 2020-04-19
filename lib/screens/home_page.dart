@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../providers/homeprovider.dart';
 import '../providers/country_provider.dart';
+import '../providers/province_provider.dart';
 import '../screens/about_page.dart';
 import '../utilities/app_style.dart';
 
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     });
     Provider.of<HomeProvider>(context, listen: false).getHomeProvider();
     Provider.of<CountryProvider>(context, listen: false).getCountryProvider();
+    Provider.of<ProvinceProvider>(context, listen: false).getProvinceProvider(_selectedLocation);
   }
 
   @override
@@ -32,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     final nf = NumberFormat("#,###");
     var home = Provider.of<HomeProvider>(context).home;
     var country = Provider.of<CountryProvider>(context).country;
+    var province = Provider.of<ProvinceProvider>(context).province;
     return Scaffold(
       appBar: AppBar(
         title: Image.asset('lib/images/covid19.png', height: 20.0),
@@ -85,22 +88,44 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Theme(
-                          data: ThemeData(canvasColor: AppStyle.bg),
-                          child: DropdownButton(
-                            isExpanded: true,
-                            hint: Text('Please choose a location', style: TextStyle(color: AppStyle.bgl),
-                            ),
-                            value: _selectedLocation,
-                            onChanged: (newValue){
-                              print(newValue);
-                              setState(() {
-                                _selectedLocation = newValue;
-                              });
-                              
-                            },
+                        data: ThemeData(canvasColor: AppStyle.bg),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          hint: Text(
+                            'Please choose a location',
+                            style: TextStyle(color: AppStyle.bgl),
                           ),
-                          ),
-                    )
+                          value: _selectedLocation,
+                          onChanged: (newValue) {
+                            print(newValue);
+                            setState(() {
+                              _selectedLocation = newValue;
+                            });
+                            Provider.of<ProvinceProvider>(context,
+                                    listen: false)
+                                .getProvinceProvider(newValue);
+                          },
+                          items: country.countries
+                              .map(
+                                (val) => DropdownMenuItem(
+                                  value: val.iso2,
+                                  child: Text(
+                                    val.name,
+                                    style: TextStyle(
+                                      color: AppStyle.txg,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                    confirmDetail(
+                      province?.confirmed?.value?.toString(),
+                      province?.recovered?.value?.toString(),
+                      province?.deaths?.value?.toString(),
+                    ),
                 ],
               ),
             )
@@ -122,6 +147,40 @@ class _HomePageState extends State<HomePage> {
               style: AppStyle.subtitleMain.copyWith(color: color)),
         ),
       ),
+    );
+  }
+
+  Widget confirmDetail(confirm,recovered,death){
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Text('Confirmed', style: AppStyle.stdtw),
+              Padding(padding: AppStyle.pv10, child: Text(confirm ?? '',style: AppStyle.stdtb.copyWith(color:AppStyle.txw,),),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Text('Recovered', style: AppStyle.stdtw),
+              Padding(padding: AppStyle.pv10, child: Text(recovered ?? '',style: AppStyle.stdtb.copyWith(color:AppStyle.txg,),),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Text('Deaths', style: AppStyle.stdtw),
+              Padding(padding: AppStyle.pv10, child: Text(death ?? '',style: AppStyle.stdtb.copyWith(color:AppStyle.txr,),),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }
