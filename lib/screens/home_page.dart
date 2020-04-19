@@ -92,6 +92,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                             value: _selectedLocation,
                             onChanged: (newValue){
+                              print(newValue);
+                              setState(() {
+                                _selectedLocation = newValue;
+                              });
                               
                             },
                           ),
