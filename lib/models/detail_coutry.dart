@@ -47,7 +47,7 @@ class Confirmed {
     @required this.value,
     @required this.detail,
   });
-  factory Confirmed.fromMap(Map<String, dynamic>json) => Confirmed(value: json["value"] == null ? null : json["vlaue"],
+  factory Confirmed.fromMap(Map<String, dynamic>json) => Confirmed(value: json["value"] == null ? null : json["value"],
   detail: json["detail"] == null ? null : json["detail"],
   );
   Map<String, dynamic>toMap()=> {
@@ -55,3 +55,4 @@ class Confirmed {
     "value" : detail == null ? null : detail,
   };
 }
+
